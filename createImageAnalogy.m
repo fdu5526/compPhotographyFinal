@@ -7,12 +7,17 @@ function output = createImageAnalogy(A, Ap, B)
 	Asize = size(A);
 	Bp = zeros(size(B));
 
-	randSearchCount = 100;
+	randSearchCount = 3;
+	halfPatchSize = 1;
 
 	% loop through B
-	for by = 1:Bsize(1)
-		for bx = 1:Bsize(2)
-			b = [B(by,bx,1),B(by,bx,2),B(by,bx,3)];
+	for by = (1+halfPatchSize):(Bsize(1)/(halfPatchSize*2+1))
+		for bx = (1+halfPatchSize):(Bsize(2)/(halfPatchSize*2+1))
+			
+			byRange = (by-halfPatchSize):(by+halfPatchSize);
+			bxRange = (bx-halfPatchSize):(bx+halfPatchSize);
+
+			b = B((by-halfPatchSize):(by+halfPatchSize),(bx-halfPatchSize):(bx+halfPatchSize),:)
 
 			% find match in A
 			ayL = randi([1,Asize(1)], 1, randSearchCount);
@@ -39,7 +44,17 @@ function output = createImageAnalogy(A, Ap, B)
 end
 
 
-function n2 = dist2(v1, v2)
-	n2 = sum((v1 - v2) .^ 2);
+function p = bestMatch(A, Ap, B, Bp, s, l, q)
+
+	p = 0;
+end
+
+
+function p = bestApproximateMatch(A, Ap, B, Bp, l, q)
+	p = 0;
+end
+
+function p = bestCoherenceMatch(A, Ap, B, Bp, s, l, q)
+	p = 0;
 end
 
