@@ -7,54 +7,54 @@ function output = createImageAnalogy(A, Ap, B)
 	Asize = size(A);
 	Bp = zeros(size(B));
 
-	randSearchCount = 3;
-	halfPatchSize = 1;
+	% independent magic numbers
+	randSearchCount = 50;
+	halfPatchSize = 4;
+
+	patchSize = halfPatchSize*2+1;
 
 	% loop through B
-	for by = (1+halfPatchSize):(Bsize(1)/(halfPatchSize*2+1))
-		for bx = (1+halfPatchSize):(Bsize(2)/(halfPatchSize*2+1))
+	for by = (1+halfPatchSize):patchSize:(Bsize(1)-halfPatchSize)
+		for bx = (1+halfPatchSize):patchSize:(Bsize(2)-halfPatchSize)
+
+			% get map in B (real photograph)
+			bYRange = (by-halfPatchSize):(by+halfPatchSize);
+			bXRange = (bx-halfPatchSize):(bx+halfPatchSize);
+			b = B(bYRange,bXRange,:);
+			b = b(:)';
+
+			% generate random coordinates
+			ayL = randi([1+halfPatchSize,round(Asize(1)/(halfPatchSize*2+1))], 1, randSearchCount);
+			axL = randi([1+halfPatchSize,round(Asize(2)/(halfPatchSize*2+1))], 1, randSearchCount);
 			
-			byRange = (by-halfPatchSize):(by+halfPatchSize);
-			bxRange = (bx-halfPatchSize):(bx+halfPatchSize);
-
-			b = B((by-halfPatchSize):(by+halfPatchSize),(bx-halfPatchSize):(bx+halfPatchSize),:)
-
-			% find match in A
-			ayL = randi([1,Asize(1)], 1, randSearchCount);
-			axL = randi([1,Asize(2)], 1, randSearchCount);
-			bestA = [1,1]; bestDist = 100000;
+			% search in A $randSearchCount times
+			bestA = {}; bestDist = 100000;
 			for c = 1:randSearchCount
 				ax = axL(c);
 				ay = ayL(c);
-				
-				a = [A(ay,ax,1),A(ay,ax,2),A(ay,ax,3)];
+
+				% get data in A
+				AYRange = (ay-halfPatchSize):(ay+halfPatchSize);
+				AXRange = (ax-halfPatchSize):(ax+halfPatchSize);
+				a = A(AYRange,AXRange,:);
+				a = a(:)';
+
+				% SSD distance
 				d = dist2(a,b);
 
+				% found best distance
 				if(d < bestDist)
 					bestDist = d;
-					bestA = [ay,ax];
+					bestA = {AYRange,AXRange};
 				end
 			end
 
-			Bp(by, bx, :) = Ap(bestA(1),bestA(2),:);
+			% set best patch to be in Bp
+			Bp(bYRange, bXRange, :) = Ap(bestA{1},bestA{2},:);
 		end
 	end
 
+	imshow(Bp)
 	output = Bp;
-end
-
-
-function p = bestMatch(A, Ap, B, Bp, s, l, q)
-
-	p = 0;
-end
-
-
-function p = bestApproximateMatch(A, Ap, B, Bp, l, q)
-	p = 0;
-end
-
-function p = bestCoherenceMatch(A, Ap, B, Bp, s, l, q)
-	p = 0;
 end
 

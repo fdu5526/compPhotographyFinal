@@ -7,7 +7,7 @@ function [done] = transfer()
 	Bp = createImageAnalogy(A, Ap, B);
 
 	% show/save the image
-	imshow(Bp);
+	%imshow(Bp);
 
 end
 
