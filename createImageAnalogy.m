@@ -7,19 +7,18 @@ function output = createImageAnalogy(A, Ap, B)
 
 	% independent magic numbers
 	searchCount = 50;
-	halfPatchSize = 4;
-
-	patchSize = halfPatchSize*2+1;
+	halfPatchSize = 10;
 
 	% loop through B
-	for by = (1+halfPatchSize):patchSize:(Bsize(1)-halfPatchSize)
-		for bx = (1+halfPatchSize):patchSize:(Bsize(2)-halfPatchSize)
+	for by = (1+halfPatchSize):halfPatchSize:(Bsize(1)-halfPatchSize)
+		for bx = (1+halfPatchSize):halfPatchSize:(Bsize(2)-halfPatchSize)
 
-			% get map in B (real photograph)
+			% get data in B
 			bYRange = (by-halfPatchSize):(by+halfPatchSize);
 			bXRange = (bx-halfPatchSize):(bx+halfPatchSize);
 			b = B(bYRange,bXRange,:);
 			b = b(:)';
+
 
 			% generate random coordinates
 			ayL = randi([1+halfPatchSize,Asize(1)-halfPatchSize], 1, searchCount);
@@ -52,7 +51,6 @@ function output = createImageAnalogy(A, Ap, B)
 		end
 	end
 
-	imshow(Bp)
 	output = Bp;
 end
 
