@@ -6,8 +6,10 @@ function output = createImageAnalogy(A, Ap, B)
 	Bsize = size(B); Asize = size(A); Bp = zeros(size(B));
 
 	% independent magic numbers
-	searchCount = 50;
-	halfPatchSize = 10;
+	searchCount = 300;
+	halfPatchSize = 5;
+
+	patchSize = halfPatchSize*2;
 
 	% loop through B
 	for by = (1+halfPatchSize):halfPatchSize:(Bsize(1)-halfPatchSize)
@@ -18,6 +20,19 @@ function output = createImageAnalogy(A, Ap, B)
 			bXRange = (bx-halfPatchSize):(bx+halfPatchSize);
 			b = B(bYRange,bXRange,:);
 			b = b(:)';
+
+			bXLeft = b;
+			if(bx-patchSize >= 1)
+				bXLeft = Bp(bYRange, (bx-patchSize):bx, :);
+				bXLeft = bXLeft(:)';
+			end
+
+			bYTop = b;
+			if(by-patchSize >= 1)
+				bYTop = Bp((by-patchSize):by, bXRange, :);
+				bYTop = bYTop(:)';
+			end
+
 
 
 			% generate random coordinates
@@ -36,8 +51,8 @@ function output = createImageAnalogy(A, Ap, B)
 				a = A(AYRange,AXRange,:);
 				a = a(:)';
 
-				% SSD distance
-				d = dist2(a,b);
+				% weighted SSD
+				d = dist2(a,b) + 2*dist2(a,bXLeft) + 2*dist2(a,bYTop);
 
 				% found best distance
 				if(d < bestDist)
