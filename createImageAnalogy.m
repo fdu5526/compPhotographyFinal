@@ -3,12 +3,10 @@ function output = createImageAnalogy(A, Ap, B)
 	rng(1);
 
 	% initial setup
-	Bsize = size(B);
-	Asize = size(A);
-	Bp = zeros(size(B));
+	Bsize = size(B); Asize = size(A); Bp = zeros(size(B));
 
 	% independent magic numbers
-	randSearchCount = 50;
+	searchCount = 50;
 	halfPatchSize = 4;
 
 	patchSize = halfPatchSize*2+1;
@@ -24,12 +22,12 @@ function output = createImageAnalogy(A, Ap, B)
 			b = b(:)';
 
 			% generate random coordinates
-			ayL = randi([1+halfPatchSize,round(Asize(1)/(halfPatchSize*2+1))], 1, randSearchCount);
-			axL = randi([1+halfPatchSize,round(Asize(2)/(halfPatchSize*2+1))], 1, randSearchCount);
+			ayL = randi([1+halfPatchSize,Asize(1)-halfPatchSize], 1, searchCount);
+			axL = randi([1+halfPatchSize,Asize(2)-halfPatchSize], 1, searchCount);
 			
-			% search in A $randSearchCount times
+			% search in A $searchCount times
 			bestA = {}; bestDist = 100000;
-			for c = 1:randSearchCount
+			for c = 1:searchCount
 				ax = axL(c);
 				ay = ayL(c);
 
