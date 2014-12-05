@@ -21,17 +21,17 @@ function output = createImageAnalogy(A, Ap, B)
 			b = B(bYRange,bXRange,:);
 			b = b(:)';
 
-			bpXLeft = zeros(size(b));
+			bpXLeft = zeros(halfPatchSize*2+1, halfPatchSize+1,3);
 			if(bx-patchSize >= 1)
-				bpXLeft = Bp(bYRange, (bx-patchSize):bx, :);
-				bpXLeft = bpXLeft(:)';
+				bpXLeft = Bp(bYRange, (bx-halfPatchSize):bx, :);
 			end
+			bpXLeft = bpXLeft(:)';
 
-			bpYTop = zeros(size(b));
+			bpYTop = zeros(halfPatchSize*2+1, halfPatchSize+1,3);
 			if(by-patchSize >= 1)
-				bpYTop = Bp((by-patchSize):by, bXRange, :);
-				bpYTop = bpYTop(:)';
+				bpYTop = Bp(by:(by+halfPatchSize), bXRange, :);
 			end
+			bpYTop = bpYTop(:)';
 
 
 
@@ -50,12 +50,18 @@ function output = createImageAnalogy(A, Ap, B)
 				AXRange = (ax-halfPatchSize):(ax+halfPatchSize);
 				a = A(AYRange,AXRange,:);
 				a = a(:)';
+				apXLeft = A(AYRange,1:(halfPatchSize+1),:);
+				apXLeft = apXLeft(:)';
+				apYTop = A((ay-halfPatchSize):ay,AXRange,:);
+				apYTop = apYTop(:)';
+
 
 				ap = Ap(AYRange,AXRange,:);
 				ap = ap(:)';
 
+
 				% weighted SSD
-				d = 2*dist2(a,b) + dist2(ap,bpXLeft) + dist2(ap,bpYTop);
+				d = 2*dist2(a,b) + dist2(apXLeft,bpXLeft) + dist2(apYTop,bpYTop);
 
 				% found best distance
 				if(d < bestDist)
