@@ -6,7 +6,7 @@ function output = createImageAnalogy(A, Ap, B)
 	Bsize = size(B); Asize = size(A); Bp = zeros(size(B));
 
 	% independent magic numbers
-	searchCount = 100;
+	searchCount = 1000;
 	halfPatchSize = 10;
 
 	patchSize = halfPatchSize*2;
