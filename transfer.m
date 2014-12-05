@@ -1,6 +1,6 @@
 function [done] = transfer()
 	% load data
-	data = loadTest();
+	data = loadRiver();
 	A = data{1}; Ap = data{2}; B = data{3};
 
 	% create the image analogy

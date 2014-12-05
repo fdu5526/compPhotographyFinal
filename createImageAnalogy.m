@@ -7,7 +7,7 @@ function output = createImageAnalogy(A, Ap, B)
 
 	% independent magic numbers
 	searchCount = 100;
-	halfPatchSize = 5;
+	halfPatchSize = 20;
 
 	patchSize = halfPatchSize*2;
 
@@ -52,7 +52,7 @@ function output = createImageAnalogy(A, Ap, B)
 				a = a(:)';
 
 				% weighted SSD
-				d = dist2(a,b) + dist2(a,bXLeft) + dist2(a,bYTop);
+				d = 2*dist2(a,b) + dist2(a,bXLeft) + dist2(a,bYTop);
 
 				% found best distance
 				if(d < bestDist)
