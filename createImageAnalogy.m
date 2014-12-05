@@ -7,7 +7,7 @@ function output = createImageAnalogy(A, Ap, B)
 
 	% independent magic numbers
 	searchCount = 100;
-	halfPatchSize = 20;
+	halfPatchSize = 10;
 
 	patchSize = halfPatchSize*2;
 
@@ -21,16 +21,16 @@ function output = createImageAnalogy(A, Ap, B)
 			b = B(bYRange,bXRange,:);
 			b = b(:)';
 
-			bXLeft = b;
+			bpXLeft = zeros(size(b));
 			if(bx-patchSize >= 1)
-				bXLeft = Bp(bYRange, (bx-patchSize):bx, :);
-				bXLeft = bXLeft(:)';
+				bpXLeft = Bp(bYRange, (bx-patchSize):bx, :);
+				bpXLeft = bpXLeft(:)';
 			end
 
-			bYTop = b;
+			bpYTop = zeros(size(b));
 			if(by-patchSize >= 1)
-				bYTop = Bp((by-patchSize):by, bXRange, :);
-				bYTop = bYTop(:)';
+				bpYTop = Bp((by-patchSize):by, bXRange, :);
+				bpYTop = bpYTop(:)';
 			end
 
 
@@ -51,8 +51,11 @@ function output = createImageAnalogy(A, Ap, B)
 				a = A(AYRange,AXRange,:);
 				a = a(:)';
 
+				ap = Ap(AYRange,AXRange,:);
+				ap = ap(:)';
+
 				% weighted SSD
-				d = 2*dist2(a,b) + dist2(a,bXLeft) + dist2(a,bYTop);
+				d = 2*dist2(a,b) + dist2(ap,bpXLeft) + dist2(ap,bpYTop);
 
 				% found best distance
 				if(d < bestDist)
