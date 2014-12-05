@@ -61,7 +61,7 @@ function output = createImageAnalogy(A, Ap, B)
 
 
 				% weighted SSD
-				d = 2*dist2(a,b) + dist2(apXLeft,bpXLeft) + dist2(apYTop,bpYTop);
+				d = dist2(a,b) + dist2(apXLeft,bpXLeft) + dist2(apYTop,bpYTop);
 
 				% found best distance
 				if(d < bestDist)
