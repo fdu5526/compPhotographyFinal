@@ -36,7 +36,7 @@ function output = findMinError(im1, im2, isLeft2Right)
 
 	G = sparse(G);
 
-	[dist,paths,pred] = graphshortestpath(G,1);
+	%[dist,paths,pred] = graphshortestpath(G,1);
 
 
 	% compute image by shortest path separation
