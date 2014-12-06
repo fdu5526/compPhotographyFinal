@@ -6,7 +6,7 @@ function output = createImageAnalogy(A, Ap, B)
 	Bsize = size(B); Asize = size(A); Bp = zeros(size(B));
 
 	% independent magic numbers
-	searchCount = 1000;
+	searchCount = 100;
 	halfPatchSize = 10;
 
 	patchSize = halfPatchSize*2;
@@ -21,12 +21,14 @@ function output = createImageAnalogy(A, Ap, B)
 			b = B(bYRange,bXRange,:);
 			b = b(:)';
 
+			% the patch to left of bx by on Bp
 			bpXLeft = zeros(halfPatchSize*2+1, halfPatchSize+1,3);
 			if(bx-patchSize >= 1)
 				bpXLeft = Bp(bYRange, (bx-halfPatchSize):bx, :);
 			end
 			bpXLeft = bpXLeft(:)';
 
+			% the patch to top of bx by on Bp
 			bpYTop = zeros(halfPatchSize*2+1, halfPatchSize+1,3);
 			if(by-patchSize >= 1)
 				bpYTop = Bp(by:(by+halfPatchSize), bXRange, :);
@@ -54,11 +56,6 @@ function output = createImageAnalogy(A, Ap, B)
 				apXLeft = apXLeft(:)';
 				apYTop = A((ay-halfPatchSize):ay,AXRange,:);
 				apYTop = apYTop(:)';
-
-
-				ap = Ap(AYRange,AXRange,:);
-				ap = ap(:)';
-
 
 				% weighted SSD
 				d = dist2(a,b) + dist2(apXLeft,bpXLeft) + dist2(apYTop,bpYTop);

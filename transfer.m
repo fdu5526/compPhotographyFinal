@@ -29,3 +29,11 @@ function [data] = loadRiver()
 	B = im2double(imread('input/river/riverB.jpg'));
 	data = {A,Ap,B};
 end
+
+% load the river2 data
+function [data] = loadRiver2()
+	A = im2double(imread('input/river2/river2A.jpg'));
+	Ap = im2double(imread('input/river2/river2Ap.jpg'));
+	B = im2double(imread('input/river2/river2B.jpg'));
+	data = {A,Ap,B};
+end
