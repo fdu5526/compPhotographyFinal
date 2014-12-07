@@ -67,19 +67,25 @@ function output = createImageAnalogy(A, Ap, B)
 				end
 			end
 
-			% set best patch to be in Bp
-			bestA = Ap(bestA{1},bestA{2},:);
-			for y = bYRange
-				for x = bXRange
-					p = bestA(y - bYRange(1) + 1, x - bXRange(1) + 1, :);
+			
 
-					% blend linearly horizontally
-					if(bx-patchSize >= 1)
-						Bp(y, x, :) = 0.5*p + 0.5*bpXLeft(y - bYRange(1) + 1, x - bXRange(1) + 1, :);
+
+
+			if(false)
+				%set best patch to be in Bp
+				bestA = Ap(bestA{1},bestA{2},:);
+				for y = bYRange
+					for x = bXRange
+						p = bestA(y - bYRange(1) + 1, x - bXRange(1) + 1, :);
+
+						% blend linearly horizontally
+						if(bx-patchSize >= 1)
+							Bp(y, x, :) = 0.5*p + 0.5*bpXLeft(y - bYRange(1) + 1, x - bXRange(1) + 1, :);
+						end
+
+						% TODO also blend vertically
+
 					end
-
-					% TODO also blend vertically
-
 				end
 			end
 			

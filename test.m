@@ -6,17 +6,18 @@ function done = test()
 	width = size(im1,2);
 
 	im1p = im1(:,halfWidth:width,:);
-	im2p = im1(:,1:(halfWidth+1),:);
+	im2p = im2(:,1:(halfWidth+1),:);
 
 	imMid = findMinError(im1p,im2p,true);
 
 	im = zeros(size(im1,1),width + halfWidth,3);
 
-	for y = 1:size(im,1)
-		for x = 1:size(im,2)
 
-		end
-	end
+	im(:,1:(halfWidth-1),:) = im1(:,1:(halfWidth-1),:);
+	im(:,halfWidth:width,:) = imMid(:,:,:);
+	im(:,(width+1):(width + halfWidth),:) = im2(:,(halfWidth+1):width,:);
+
+
 
 	imshow(im);
 end

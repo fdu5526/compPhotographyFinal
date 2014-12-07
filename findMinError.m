@@ -4,9 +4,7 @@ function output = findMinError(im1, im2, isLeft2Right)
 	sizeIm = size(im1);
 	imDiff = abs(im1 - im2);
 
-	% 4 values: left, top, right, bottom
-	edges = Inf(sizeIm(1), sizeIm(2), 4);
-
+	% the graph, index is (width*(y-1) + x)
 	G = zeros(sizeIm(1)*sizeIm(2),sizeIm(1)*sizeIm(2));
 
 	% compute the edges
@@ -36,12 +34,38 @@ function output = findMinError(im1, im2, isLeft2Right)
 
 	G = sparse(G);
 
-	%[dist,paths,pred] = graphshortestpath(G,1);
+	botMid = sizeIm(2)/2;
+	topMid = (sizeIm(1)-1)*sizeIm(2) + botMid;
+	[dist,paths,pred] = graphshortestpath(G,botMid,topMid);
 
+	p = 1;
+	paths = sort(paths);
+	im = zeros(sizeIm);
 
-	% compute image by shortest path separation
+	if(isLeft2Right)
+		% merge the 2 images
+		for y = 1:sizeIm(1)
+			for x = 1:sizeIm(2)
 
-	output = 0.5*im1 + 0.5*im2;
+				if(p <= size(paths,2))
+					px = mod(paths(p), sizeIm(2));
+				else
+					px = 0;
+				end
+
+				if(px < x)
+					im(y,x,:) = im2(y,x,:);
+				elseif(px == x)
+					p = p + 1;
+					im(y,x,:) = 0.5*im1(y,x,:) + 0.5*im2(y,x,:);
+				else
+					im(y,x,:) = im1(y,x,:);
+				end
+			end
+		end
+	end
+
+	output = im;
 end
 
 
