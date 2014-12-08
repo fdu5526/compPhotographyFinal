@@ -81,10 +81,11 @@ function output = createImageAnalogy(A, Ap, B)
 			% assign combined images to output
 			Bp(bYRange, (bx-halfPatchSize):(bx-halfPatchSize+overlapSize),:) = bpXLeftNew; % combine left
 			Bp((by+halfPatchSize-overlapSize):(by+halfPatchSize), bXRange,:) = bpXTopNew;	 % combine right
-			Bp(bYRange, (bx-halfPatchSize+overlapSize+1):(bx+halfPatchSize),:) = bestAp(:, (overlapSize+2):size(bestAp,2),:);
 
+			yRange = (by-halfPatchSize):(by+halfPatchSize-overlapSize-1);
+			xRange = (bx-halfPatchSize+overlapSize+1):(bx+halfPatchSize);
+			Bp(yRange, xRange,:) = bestAp(1:(overlapSize+2), (overlapSize+2):size(bestAp,2),:);
 
-			
 		end
 	end
 
