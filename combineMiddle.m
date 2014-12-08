@@ -21,7 +21,7 @@ function output = combineMiddle(im1, im2, isLeft2Right)
 				pt = imDiff(y+1,x,:);
 				G((y-1)*sizeIm(2) + x, (y)*sizeIm(2) + x) = pixelDiff(p,pt);
 			end
-			if(x+1 <= sizeIm(2)) % right
+			if(x+1 <= sizeIm(2)) % isLeft2Right
 				pr = imDiff(y,x+1,:);
 				G((y-1)*sizeIm(2) + x, (y-1)*sizeIm(2) + x + 1) = pixelDiff(p,pr);
 			end

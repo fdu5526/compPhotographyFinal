@@ -7,8 +7,8 @@ function output = createImageAnalogy(A, Ap, B)
 
 	% independent magic numbers
 	searchCount = 100;
-	halfPatchSize = 10;
-	overlapSize = 5;
+	halfPatchSize = 12;
+	overlapSize = 11;
 
 	patchSize = halfPatchSize*2;
 
@@ -25,16 +25,16 @@ function output = createImageAnalogy(A, Ap, B)
 			% the patch to left of bx by on Bp
 			bpXLeft = zeros(halfPatchSize*2+1, overlapSize+1,3);
 			if(bx-patchSize >= 1)
-				bpXLeft = Bp(bYRange, (bx-overlapSize):bx, :);
+				bpXLeft = Bp(bYRange, (bx-halfPatchSize):(bx-halfPatchSize+overlapSize), :);
 			end
-			bpXLeft = bpXLeft(:)';
+			bpXLeftT = bpXLeft(:)';
 
 			% the patch to top of bx by on Bp
 			bpYTop = zeros(halfPatchSize*2+1, overlapSize+1,3);
 			if(by-patchSize >= 1)
-				bpYTop = Bp(by:(by+overlapSize), bXRange, :);
+				bpYTop = Bp((by+halfPatchSize-overlapSize):(by+halfPatchSize), bXRange, :);
 			end
-			bpYTop = bpYTop(:)';
+			bpYTopT = bpYTop(:)';
 
 
 
@@ -43,7 +43,7 @@ function output = createImageAnalogy(A, Ap, B)
 			axL = randi([1+halfPatchSize,Asize(2)-halfPatchSize], 1, searchCount);
 			
 			% search in A $searchCount times
-			bestA = {}; bestDist = 100000;
+			bestARanges = {}; bestDist = 100000;
 			for c = 1:searchCount
 				ax = axL(c);
 				ay = ayL(c);
@@ -53,24 +53,29 @@ function output = createImageAnalogy(A, Ap, B)
 				AXRange = (ax-halfPatchSize):(ax+halfPatchSize);
 				a = A(AYRange,AXRange,:);
 				a = a(:)';
-				apXLeft = A(AYRange,1:(overlapSize+1),:);
+				apXLeft = Ap(AYRange,(ax-halfPatchSize):(ax-halfPatchSize+overlapSize),:);
 				apXLeft = apXLeft(:)';
-				apYTop = A((ay-overlapSize):ay,AXRange,:);
+				apYTop = Ap((ay+halfPatchSize-overlapSize):(ay+halfPatchSize),AXRange,:);
 				apYTop = apYTop(:)';
 
 				% weighted SSD
-				d = dist2(a,b) + dist2(apXLeft,bpXLeft) + dist2(apYTop,bpYTop);
+				d = dist2(a,b) + dist2(apXLeft,bpXLeftT) + dist2(apYTop,bpYTopT);
 
 				% found best distance
 				if(d < bestDist)
 					bestDist = d;
-					bestA = {AYRange,AXRange};
+					bestARanges = {AYRange,AXRange};
 				end
 			end
 
+			bestAp = Ap(bestARanges{1}, bestARanges{2}, :);
+			bestApTop = bestAp((size(bestAp,1)-overlapSize):(size(bestAp,1)),:,:);
+			bestApLeft = bestAp(:,1:(overlapSize+1),:);
+			bpXLeftNew = combineMiddle(bpXLeft, bestApLeft, true);
 			
-			%bpXLeftNew = 
-			Bp(bYRange, bXRange,:) = Ap(bestA{1}, bestA{2}, :);
+
+			Bp(bYRange, (bx-halfPatchSize):(bx-halfPatchSize+overlapSize),:) = bpXLeftNew;
+			Bp(bYRange, (bx-halfPatchSize+overlapSize+1):(bx+halfPatchSize),:) = bestAp(:, (overlapSize+2):size(bestAp,2),:);
 
 
 			if(false)
