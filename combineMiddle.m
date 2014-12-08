@@ -1,5 +1,5 @@
 % runs dijkstra, find min error, split image
-function output = findMinError(im1, im2, isLeft2Right)
+function output = combineMiddle(im1, im2, isLeft2Right)
 	
 	sizeIm = size(im1);
 	imDiff = abs(im1 - im2);

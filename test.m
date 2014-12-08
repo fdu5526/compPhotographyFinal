@@ -8,7 +8,7 @@ function done = test()
 	im1p = im1(:,halfWidth:width,:);
 	im2p = im2(:,1:(halfWidth+1),:);
 
-	imMid = findMinError(im1p,im2p,true);
+	imMid = combineMiddle(im1p,im2p,true);
 
 	im = zeros(size(im1,1),width + halfWidth,3);
 
