@@ -33,16 +33,18 @@ function output = combineMiddle(im1, im2, isLeft2Right)
 	end
 
 	G = sparse(G);
-
-	botMid = sizeIm(2)/2;
-	topMid = (sizeIm(1)-1)*sizeIm(2) + botMid;
-	[dist,paths,pred] = graphshortestpath(G,botMid,topMid);
-
-	p = 1;
-	paths = sort(paths);
 	im = zeros(sizeIm);
 
+
 	if(isLeft2Right)
+
+		botMid = sizeIm(2)/2;
+		topMid = (sizeIm(1)-1)*sizeIm(2) + botMid;
+		[dist,paths,pred] = graphshortestpath(G,botMid,topMid);
+
+		p = 1;
+		paths = sort(paths);
+
 		% merge the 2 images
 		for y = 1:sizeIm(1)
 			for x = 1:sizeIm(2)
@@ -56,6 +58,35 @@ function output = combineMiddle(im1, im2, isLeft2Right)
 				if(px < x)
 					im(y,x,:) = im2(y,x,:);
 				elseif(px == x)
+					p = p + 1;
+					im(y,x,:) = 0.5*im1(y,x,:) + 0.5*im2(y,x,:);
+				else
+					im(y,x,:) = im1(y,x,:);
+				end
+			end
+		end
+	else
+
+		leftMid = round(sizeIm(1)/2) * sizeIm(2) + 1;
+		rightMid = leftMid + sizeIm(2) - 1;
+		[dist,paths,pred] = graphshortestpath(G,leftMid,rightMid);
+
+		p = 1;
+		paths = sort(paths);
+
+		% merge the 2 images
+		for x = 1:sizeIm(2)
+			for y = 1:sizeIm(1)
+			
+				if(p <= size(paths,2))
+					py = floor(paths(p)/sizeIm(2)) + 1;
+				else
+					py = 0;
+				end
+
+				if(py < y)
+					im(y,x,:) = im2(y,x,:);
+				elseif(py == y)
 					p = p + 1;
 					im(y,x,:) = 0.5*im1(y,x,:) + 0.5*im2(y,x,:);
 				else
