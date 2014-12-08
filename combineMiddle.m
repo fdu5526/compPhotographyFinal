@@ -59,7 +59,7 @@ function output = combineMiddle(im1, im2, isLeft2Right)
 					im(y,x,:) = im2(y,x,:);
 				elseif(px == x)
 					p = p + 1;
-					im(y,x,:) = 0.5*im1(y,x,:) + 0.5*im2(y,x,:);
+					im(y,x,:) = 0.5*im1(y,x,:) + 0.5*im2(y,x,:);%[1,0,0];
 				else
 					im(y,x,:) = im1(y,x,:);
 				end
@@ -89,7 +89,7 @@ function output = combineMiddle(im1, im2, isLeft2Right)
 					im(y,x,:) = im2(y,x,:);
 				elseif(py == y)
 					p = p + 1;
-					im(y,x,:) = [1,0,0];% 0.5*im1(y,x,:) + 0.5*im2(y,x,:);
+					im(y,x,:) = 0.5*im1(y,x,:) + 0.5*im2(y,x,:);%[1,0,0];% 
 				else
 					im(y,x,:) = im1(y,x,:);
 				end

@@ -6,9 +6,9 @@ function output = createImageAnalogy(A, Ap, B)
 	Bsize = size(B); Asize = size(A); Bp = zeros(size(B));
 
 	% independent magic numbers
-	searchCount = 1;
-	halfPatchSize = 12;
-	overlapSize = 11;
+	searchCount = 1000;
+	halfPatchSize = 9;
+	overlapSize = 7;
 
 	patchSize = halfPatchSize*2;
 
@@ -30,11 +30,11 @@ function output = createImageAnalogy(A, Ap, B)
 			bpXLeftT = bpXLeft(:)';
 
 			% the patch to top of bx by on Bp
-			bpYTop = zeros(overlapSize+1,halfPatchSize*2+1,3);
+			bpYBot = zeros(overlapSize+1,halfPatchSize*2+1,3);
 			if(by-patchSize >= 1)
-				bpYTop = Bp((by+halfPatchSize-overlapSize):(by+halfPatchSize), bXRange, :);
+				bpYBot = Bp((by-halfPatchSize):(by-halfPatchSize+overlapSize), bXRange, :);
 			end
-			bpYTopT = bpYTop(:)';
+			bpYBotT = bpYBot(:)';
 
 
 		
@@ -58,11 +58,11 @@ function output = createImageAnalogy(A, Ap, B)
 				a = a(:)';
 				apXLeft = Ap(AYRange,(ax-halfPatchSize):(ax-halfPatchSize+overlapSize),:);
 				apXLeft = apXLeft(:)';
-				apYTop = Ap((ay+halfPatchSize-overlapSize):(ay+halfPatchSize),AXRange,:);
-				apYTop = apYTop(:)';
+				apYBot = Ap((ay-halfPatchSize):(ay-halfPatchSize+overlapSize),AXRange,:);
+				apYBot = apYBot(:)';
 
 				% weighted SSD
-				d = dist2(a,b) + dist2(apXLeft,bpXLeftT) + dist2(apYTop,bpYTopT);
+				d = dist2(a,b) + dist2(apXLeft,bpXLeftT) + dist2(apYBot,bpYBotT);
 
 				% found best distance
 				if(d < bestDist)
@@ -73,18 +73,20 @@ function output = createImageAnalogy(A, Ap, B)
 
 			% calculate min error for combining correctly
 			bestAp = Ap(bestARanges{1}, bestARanges{2}, :);
-			bestApTop = bestAp((size(bestAp,1)-overlapSize):(size(bestAp,1)),:,:);
 			bestApLeft = bestAp(:,1:(overlapSize+1),:);
+			bestApBot = bestAp(1:(overlapSize+1),:,:);
 			bpXLeftNew = combineMiddle(bpXLeft, bestApLeft, true);
-			bpXTopNew = combineMiddle(bpYTop, bestApTop, false);
+			bpXBotNew = combineMiddle(bpYBot, bestApBot, false);
 			
-			% assign combined images to output
-			Bp(bYRange, (bx-halfPatchSize):(bx-halfPatchSize+overlapSize),:) = bpXLeftNew; % combine left
-			Bp((by+halfPatchSize-overlapSize):(by+halfPatchSize), bXRange,:) = bpXTopNew;	 % combine right
 
-			yRange = (by-halfPatchSize):(by+halfPatchSize-overlapSize-1);
+			yRange = (by-halfPatchSize+overlapSize+1):(by+halfPatchSize);
 			xRange = (bx-halfPatchSize+overlapSize+1):(bx+halfPatchSize);
-			Bp(yRange, xRange,:) = bestAp(1:(overlapSize+2), (overlapSize+2):size(bestAp,2),:);
+			Bp(yRange, xRange,:) = bestAp((overlapSize+2):size(bestAp,1), (overlapSize+2):size(bestAp,2),:);
+
+			% assign combined images to output
+			Bp((by-halfPatchSize):(by-halfPatchSize+overlapSize), bXRange,:) = bpXBotNew;	 % combine bottom
+			Bp(bYRange, (bx-halfPatchSize):(bx-halfPatchSize+overlapSize),:) = bpXLeftNew; % combine left
+
 
 		end
 	end
