@@ -8,6 +8,7 @@ function output = createImageAnalogy(A, Ap, B)
 	% independent magic numbers
 	searchCount = 100;
 	halfPatchSize = 10;
+	overlapSize = 5;
 
 	patchSize = halfPatchSize*2;
 
@@ -22,16 +23,16 @@ function output = createImageAnalogy(A, Ap, B)
 			b = b(:)';
 
 			% the patch to left of bx by on Bp
-			bpXLeft = zeros(halfPatchSize*2+1, halfPatchSize+1,3);
+			bpXLeft = zeros(halfPatchSize*2+1, overlapSize+1,3);
 			if(bx-patchSize >= 1)
-				bpXLeft = Bp(bYRange, (bx-halfPatchSize):bx, :);
+				bpXLeft = Bp(bYRange, (bx-overlapSize):bx, :);
 			end
 			bpXLeft = bpXLeft(:)';
 
 			% the patch to top of bx by on Bp
-			bpYTop = zeros(halfPatchSize*2+1, halfPatchSize+1,3);
+			bpYTop = zeros(halfPatchSize*2+1, overlapSize+1,3);
 			if(by-patchSize >= 1)
-				bpYTop = Bp(by:(by+halfPatchSize), bXRange, :);
+				bpYTop = Bp(by:(by+overlapSize), bXRange, :);
 			end
 			bpYTop = bpYTop(:)';
 
@@ -52,9 +53,9 @@ function output = createImageAnalogy(A, Ap, B)
 				AXRange = (ax-halfPatchSize):(ax+halfPatchSize);
 				a = A(AYRange,AXRange,:);
 				a = a(:)';
-				apXLeft = A(AYRange,1:(halfPatchSize+1),:);
+				apXLeft = A(AYRange,1:(overlapSize+1),:);
 				apXLeft = apXLeft(:)';
-				apYTop = A((ay-halfPatchSize):ay,AXRange,:);
+				apYTop = A((ay-overlapSize):ay,AXRange,:);
 				apYTop = apYTop(:)';
 
 				% weighted SSD
@@ -68,7 +69,8 @@ function output = createImageAnalogy(A, Ap, B)
 			end
 
 			
-
+			%bpXLeftNew = 
+			Bp(bYRange, bXRange,:) = Ap(bestA{1}, bestA{2}, :);
 
 
 			if(false)
