@@ -36,8 +36,8 @@ function output = combineMiddle(im1, im2, isLeft2Right)
 	im = zeros(sizeIm);
 
 
+	% from left to right
 	if(isLeft2Right)
-
 		botMid = sizeIm(2)/2;
 		topMid = (sizeIm(1)-1)*sizeIm(2) + botMid;
 		[dist,paths,pred] = graphshortestpath(G,botMid,topMid);
@@ -65,8 +65,9 @@ function output = combineMiddle(im1, im2, isLeft2Right)
 				end
 			end
 		end
+	
+	% from top to bottom
 	else
-
 		leftMid = round(sizeIm(1)/2) * sizeIm(2) + 1;
 		rightMid = leftMid + sizeIm(2) - 1;
 		[dist,paths,pred] = graphshortestpath(G,leftMid,rightMid);
@@ -88,7 +89,7 @@ function output = combineMiddle(im1, im2, isLeft2Right)
 					im(y,x,:) = im2(y,x,:);
 				elseif(py == y)
 					p = p + 1;
-					im(y,x,:) = 0.5*im1(y,x,:) + 0.5*im2(y,x,:);
+					im(y,x,:) = [1,0,0];% 0.5*im1(y,x,:) + 0.5*im2(y,x,:);
 				else
 					im(y,x,:) = im1(y,x,:);
 				end

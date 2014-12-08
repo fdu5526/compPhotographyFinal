@@ -6,7 +6,7 @@ function output = createImageAnalogy(A, Ap, B)
 	Bsize = size(B); Asize = size(A); Bp = zeros(size(B));
 
 	% independent magic numbers
-	searchCount = 100;
+	searchCount = 1;
 	halfPatchSize = 12;
 	overlapSize = 11;
 
@@ -30,11 +30,14 @@ function output = createImageAnalogy(A, Ap, B)
 			bpXLeftT = bpXLeft(:)';
 
 			% the patch to top of bx by on Bp
-			bpYTop = zeros(halfPatchSize*2+1, overlapSize+1,3);
+			bpYTop = zeros(overlapSize+1,halfPatchSize*2+1,3);
 			if(by-patchSize >= 1)
 				bpYTop = Bp((by+halfPatchSize-overlapSize):(by+halfPatchSize), bXRange, :);
 			end
 			bpYTopT = bpYTop(:)';
+
+
+		
 
 
 
@@ -68,33 +71,19 @@ function output = createImageAnalogy(A, Ap, B)
 				end
 			end
 
+			% calculate min error for combining correctly
 			bestAp = Ap(bestARanges{1}, bestARanges{2}, :);
 			bestApTop = bestAp((size(bestAp,1)-overlapSize):(size(bestAp,1)),:,:);
 			bestApLeft = bestAp(:,1:(overlapSize+1),:);
 			bpXLeftNew = combineMiddle(bpXLeft, bestApLeft, true);
+			bpXTopNew = combineMiddle(bpYTop, bestApTop, false);
 			
-
-			Bp(bYRange, (bx-halfPatchSize):(bx-halfPatchSize+overlapSize),:) = bpXLeftNew;
+			% assign combined images to output
+			Bp(bYRange, (bx-halfPatchSize):(bx-halfPatchSize+overlapSize),:) = bpXLeftNew; % combine left
+			Bp((by+halfPatchSize-overlapSize):(by+halfPatchSize), bXRange,:) = bpXTopNew;	 % combine right
 			Bp(bYRange, (bx-halfPatchSize+overlapSize+1):(bx+halfPatchSize),:) = bestAp(:, (overlapSize+2):size(bestAp,2),:);
 
 
-			if(false)
-				%set best patch to be in Bp
-				bestA = Ap(bestA{1},bestA{2},:);
-				for y = bYRange
-					for x = bXRange
-						p = bestA(y - bYRange(1) + 1, x - bXRange(1) + 1, :);
-
-						% blend linearly horizontally
-						if(bx-patchSize >= 1)
-							Bp(y, x, :) = 0.5*p + 0.5*bpXLeft(y - bYRange(1) + 1, x - bXRange(1) + 1, :);
-						end
-
-						% TODO also blend vertically
-
-					end
-				end
-			end
 			
 		end
 	end
