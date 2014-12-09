@@ -2,7 +2,7 @@ function done = test()
 	im1 = im2double(imread('input/test1.jpg'));
 	im2 = im2double(imread('input/test2.jpg'));
 
-	verticalMerge(im1, im2);
+	horizontalMerge(im1, im2);
 	done = 0;
 end
 
